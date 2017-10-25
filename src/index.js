@@ -4,7 +4,7 @@ import bodymovin from 'bodymovin';
 
 export default class Lottie extends React.Component {
     render() {
-        const { width, height } = this.props;
+        const {width, height} = this.props;
         const lottieStyles = {
             width: width ? `${width}px` : '100%',
             height: height ? `${height}px` : '100%',
@@ -12,7 +12,7 @@ export default class Lottie extends React.Component {
             margin: '0 auto',
         };
 
-        return <div ref="lavContainer" style={lottieStyles} />;
+        return <div ref="lavContainer" style={lottieStyles}/>;
     }
 
     componentDidMount() {
@@ -76,20 +76,14 @@ export default class Lottie extends React.Component {
     }
 
     registerEvents(eventListeners) {
-        eventListeners.forEach(eventListener => {
-            this.anim.addEventListener(
-                eventListener.eventName,
-                eventListener.callback
-            );
+        eventListeners.forEach((eventListener) => {
+            this.anim.addEventListener(eventListener.eventName, eventListener.callback);
         });
     }
 
-    deregisterEvents(eventListener) {
-        eventListeners.forEach(eventListener => {
-            this.anim.removeEventListener(
-                eventListener.eventName,
-                eventListener.callback
-            );
+    deregisterEvents(eventListeners) {
+        eventListeners.forEach((eventListener) => {
+            this.anim.removeEventListener(eventListener.eventName, eventListener.callback);
         });
     }
 }
