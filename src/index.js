@@ -3,95 +3,111 @@ import PropTypes from 'prop-types';
 import bodymovin from 'bodymovin';
 
 export default class Lottie extends React.Component {
+    render() {
+        const { width, height } = this.props;
+        const lottieStyles = {
+            width: width ? `${width}px` : '100%',
+            height: height ? `${height}px` : '100%',
+            overflow: 'hidden',
+            margin: '0 auto',
+        };
 
-  render() {
-    const { width, height } = this.props;
-    const lottieStyles = {
-      width: width ? `${width}px` : '100%',
-      height: height ? `${height}px` : '100%',
-      overflow: 'hidden',
-      margin: '0 auto'
-    };
-
-    return <div ref='lavContainer' style={lottieStyles}></div>;
-  }
-
-  componentDidMount() {
-    this.options = {
-      container: this.refs.lavContainer,
-      renderer: 'svg',
-      loop: this.props.options.loop !== false,
-      autoplay: this.props.options.autoplay !== false,
-      animationData: this.props.options.animationData,
-      rendererSettings: this.props.options.rendererSettings
-    };
-
-    this.anim = bodymovin.loadAnimation(this.options);
-
-    this.props.eventListeners.forEach((eventListener) => {
-      this.anim.addEventListener(eventListener.eventName, eventListener.callback);
-    });
-  }
-
-  componentWillUpdate( nextProps, nextState ) {
-    /* Recreate the animation handle if the data is changed */
-    if( this.options.animationData !== nextProps.options.animationData ) {
-      this.destroy();
-      this.options.animationData = nextProps.options.animationData;
-      this.anim = bodymovin.loadAnimation(this.options);
+        return <div ref="lavContainer" style={lottieStyles} />;
     }
-  }
 
-  componentDidUpdate() {
-    this.props.isStopped ? this.stop() : this.play();
-    this.pause();
-    this.setSpeed();
-    this.setDirection();
-  }
+    componentDidMount() {
+        this.options = {
+            container: this.refs.lavContainer,
+            renderer: 'svg',
+            loop: this.props.options.loop !== false,
+            autoplay: this.props.options.autoplay !== false,
+            animationData: this.props.options.animationData,
+            rendererSettings: this.props.options.rendererSettings,
+        };
 
-  pause() {
-    if (this.props.isPaused && !this.anim.isPaused) {
-      this.anim.pause()
-    } else if (!this.props.isPaused && this.anim.isPaused) {
-      this.anim.pause()
+        this.anim = bodymovin.loadAnimation(this.options);
+        this.registerEvents(this.props.eventListeners);
     }
-  }
 
-  stop() {
-    this.anim.stop();
-  }
+    componentWillUpdate(nextProps, nextState) {
+        /* Recreate the animation handle if the data is changed */
+        if (this.options.animationData !== nextProps.options.animationData) {
+            this.deregisterEvents(this.props.eventListeners);
+            this.destroy();
+            this.options.animationData = nextProps.options.animationData;
+            this.anim = bodymovin.loadAnimation(this.options);
+            this.registerEvents(nextProps.eventListeners);
+        }
+    }
 
-  play() {
-    this.anim.play();
-  }
+    componentDidUpdate() {
+        this.props.isStopped ? this.stop() : this.play();
+        this.pause();
+        this.setSpeed();
+        this.setDirection();
+    }
 
-  setSpeed() {
-    this.anim.setSpeed(this.props.speed);
-  }
+    pause() {
+        if (this.props.isPaused && !this.anim.isPaused) {
+            this.anim.pause();
+        } else if (!this.props.isPaused && this.anim.isPaused) {
+            this.anim.pause();
+        }
+    }
 
-  setDirection() {
-    this.anim.setDirection(this.props.direction)
-  }
+    stop() {
+        this.anim.stop();
+    }
 
-  destroy() {
-    this.anim.destroy();
-  }
+    play() {
+        this.anim.play();
+    }
+
+    setSpeed() {
+        this.anim.setSpeed(this.props.speed);
+    }
+
+    setDirection() {
+        this.anim.setDirection(this.props.direction);
+    }
+
+    destroy() {
+        this.anim.destroy();
+    }
+
+    registerEvents(eventListeners) {
+        eventListeners.forEach(eventListener => {
+            this.anim.addEventListener(
+                eventListener.eventName,
+                eventListener.callback
+            );
+        });
+    }
+
+    deregisterEvents(eventListener) {
+        eventListeners.forEach(eventListener => {
+            this.anim.removeEventListener(
+                eventListener.eventName,
+                eventListener.callback
+            );
+        });
+    }
 }
 
 Lottie.propTypes = {
-  eventListeners: PropTypes.arrayOf(PropTypes.object),
-  options: PropTypes.object.isRequired,
-  height: PropTypes.number,
-  width: PropTypes.number,
-  isStopped: PropTypes.bool,
-  isPaused: PropTypes.bool,
-  speed: PropTypes.number,
-  direction: PropTypes.number,
+    eventListeners: PropTypes.arrayOf(PropTypes.object),
+    options: PropTypes.object.isRequired,
+    height: PropTypes.number,
+    width: PropTypes.number,
+    isStopped: PropTypes.bool,
+    isPaused: PropTypes.bool,
+    speed: PropTypes.number,
+    direction: PropTypes.number,
 };
 
 Lottie.defaultProps = {
-  eventListeners: [],
-  isStopped: false,
-  isPaused: false,
-  speed: 1,
+    eventListeners: [],
+    isStopped: false,
+    isPaused: false,
+    speed: 1,
 };

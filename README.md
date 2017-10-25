@@ -77,6 +77,10 @@ export default class LottieControl extends React.Component {
 
 ```
 
+### props
+The `<Lottie />` Component supports the following components:
+
+
 ## Related Projects
 
 * [Bodymovin](https://github.com/bodymovin/bodymovin) react-lottie is a wrapper of bodymovin
