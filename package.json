@@ -10,7 +10,8 @@
     "scripts": {
         "release":
             "git add package.json && git commit -m 'chore: bump version number' && standard-version --first-release && git push --follow-tags origin master && npm publish",
-        "prepare": ". ./.scripts/prepublish.sh",
+        "prepare": "echo prepare",
+        "install": ". ./.scripts/prepublish.sh",
         "lint": "eslint src",
         "lintfix": "eslint src --fix",
         "testonly":
